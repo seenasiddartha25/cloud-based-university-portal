@@ -4,19 +4,34 @@ The Cloud-Based University Portal is a web application developed to simplify stu
 2. Access the deployed application here:
 ?? Home - University Module Registration System 
 The project was developed using Django and deployed using Microsoft Azure services to provide scalability, reliability, and secure data management.
+
 Login Page
+
 <img width="856" height="455" alt="image" src="https://github.com/user-attachments/assets/1eda4733-6d3f-4b55-9ebf-708e3809e9e8" />
 
 Home Page
 
+<img width="796" height="423" alt="image" src="https://github.com/user-attachments/assets/b8b591e3-a9bf-46ab-9fb5-865d5faafa8b" />
+
 
 Register Page
+<img width="940" height="499" alt="image" src="https://github.com/user-attachments/assets/356338f7-49f9-44e8-a290-1090e6dddd4b" />
+
 
 Student Dashboard
 
+<img width="835" height="444" alt="image" src="https://github.com/user-attachments/assets/0e07147b-979a-4786-b35a-429ab62a3d4e" />
+
+
 Modules Page
 
+<img width="896" height="476" alt="image" src="https://github.com/user-attachments/assets/44ef5480-5a4b-4de4-b87b-5dee666ea43a" />
+
+
 News & YouTube Link
+
+<img width="940" height="499" alt="image" src="https://github.com/user-attachments/assets/6abf6dae-7efc-42b3-92be-438b3aff2c34" />
+
 
 3. Functionalities Implemented
 1. User Registration & OTP Confirmation
