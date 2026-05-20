@@ -1,5 +1,7 @@
 Cloud-Based University Portal
+
 **1. Overview**
+
 The Cloud-Based University Portal is a web application developed to simplify student module registration and academic management processes. The system enables students to register, browse modules, and manage academic activities through a secure cloud-hosted platform.
 
 **2. Access the deployed application here:**
@@ -38,6 +40,7 @@ News & YouTube Link
 
 
 **3. Functionalities Implemented**
+
   1. User Registration & OTP Confirmation
     * New users must register with their email address.
     * An OTP (One-Time Password) is sent to confirm registration.
@@ -57,7 +60,9 @@ News & YouTube Link
   8. Pagination and Search facility
     * Application implements pagination or search facility
 
-  4. Technologies Used
+  
+**4. Technologies Used**
+
     a. Backend
       * Python
       * Django
@@ -82,20 +87,22 @@ News & YouTube Link
   5. External APIs provide dynamic content and integrations.
   6. Azure Web App hosts the deployed application.
 
+
 **6. Future Enhancements**
-  * Docker containerization
-  * CI/CD pipeline implementation
-  * Role-based access control
-  * Monitoring and logging integration
-  * Performance optimization
+  •	Docker containerization
+  •	CI/CD pipeline implementation
+  •	Role-based access control
+  •	Monitoring and logging integration
+  •	Performance optimization
 
 **7. Learning Outcomes**
-This project improved my practical knowledge in:
-  * Cloud application deployment
-  * Django web development
-  * Azure cloud services
-  * Database integration
-  * REST API implementation
-  * Authentication and email systems
+  This project improved my practical knowledge in:
+  •	Cloud application deployment
+  •	Django web development
+  •	Azure cloud services
+  •	Database integration
+  •	REST API implementation
+  •	Authentication and email systems
+
 
 
