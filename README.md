@@ -5,6 +5,7 @@ The Cloud-Based University Portal is a web application developed to simplify stu
 ?? Home - University Module Registration System 
 The project was developed using Django and deployed using Microsoft Azure services to provide scalability, reliability, and secure data management.
 Login Page
+<img width="856" height="455" alt="image" src="https://github.com/user-attachments/assets/1eda4733-6d3f-4b55-9ebf-708e3809e9e8" />
 
 Home Page
 
@@ -23,7 +24,7 @@ News & YouTube Link
 * An OTP (One-Time Password) is sent to confirm registration.
 2. Password Reset
 * Users can reset their password securely via email confirmation.
-3. Django REST API Integration – News API
+3. Django REST API Integration â€“ News API
 * The portal consumes and displays real-time university-related news using REST API.
 4. Google Maps Integration
 * Embedded Google Maps feature to display university location.
