@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block extra_css %}
+<style>
+    .unauthorized-container {
+        background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .error-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        animation: slideIn 0.6s ease-out;
+    }
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .error-icon {
+        animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="unauthorized-container">
+    <div class="error-card rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
+        <!-- Error Icon -->
+        <div class="error-icon mb-6">
+            <svg class="mx-auto h-24 w-24 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+        </div>
+        
+        <!-- Error Message -->
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Access Denied</h1>
+        <p class="text-gray-600 mb-6">
+            You don't have permission to access this page. Please log in with appropriate credentials or contact an administrator for assistance.
+        </p>
+        
+        <!-- Error Details -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-red-700 text-sm font-medium">Error 403: Forbidden</span>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+            {% if user.is_authenticated %}
+                <!-- User is logged in but doesn't have permission -->
+                <a href="{% url 'students:dashboard' %}" 
+                   class="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors inline-block">
+                    Go to Dashboard
+                </a>
+                <a href="{% url 'portalcontent:home' %}" 
+                   class="w-full bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-400 transition-colors inline-block">
+                    Go Home
+                </a>
+            {% else %}
+                <!-- User is not logged in -->
+                <a href="{% url 'accounts:login' %}?next={{ request.get_full_path|urlencode }}" 
+                   class="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors inline-block">
+                    Login to Continue
+                </a>
+                <div class="flex gap-2">
+                    <a href="{% url 'accounts:register' %}" 
+                       class="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-red-600 transition-colors inline-block">
+                        Register
+                    </a>
+                    <a href="{% url 'portalcontent:home' %}" 
+                       class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-400 transition-colors inline-block">
+                        Home
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Additional Help -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500 mb-3">Need help?</p>
+            <div class="flex justify-center space-x-4 text-sm">
+                <a href="{% url 'portalcontent:contact' %}" 
+                   class="text-red-600 hover:text-red-800 transition-colors">
+                    Contact Support
+                </a>
+                <span class="text-gray-300">|</span>
+                <a href="{% url 'portalcontent:about' %}" 
+                   class="text-red-600 hover:text-red-800 transition-colors">
+                    About Us
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto-redirect countdown (optional) -->
+<div id="redirectCountdown" class="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg hidden">
+    <p class="text-sm">Redirecting to login in <span id="countdownTimer">10</span> seconds...</p>
+    <button onclick="cancelRedirect()" class="text-red-200 hover:text-white ml-2 text-xs underline">Cancel</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let redirectTimer;
+let countdownInterval;
+let countdownSeconds = 10;
+
+function startRedirectCountdown() {
+    // Only auto-redirect if user is not authenticated
+    {% if not user.is_authenticated %}
+    const countdownElement = document.getElementById('redirectCountdown');
+    const timerElement = document.getElementById('countdownTimer');
+    
+    // Show countdown
+    countdownElement.classList.remove('hidden');
+    
+    countdownInterval = setInterval(() => {
+        countdownSeconds--;
+        timerElement.textContent = countdownSeconds;
+        
+        if (countdownSeconds <= 0) {
+            window.location.href = '{% url "accounts:login" %}?next={{ request.get_full_path|urlencode }}';
+        }
+    }, 1000);
+    
+    // Set main redirect timer
+    redirectTimer = setTimeout(() => {
+        window.location.href = '{% url "accounts:login" %}?next={{ request.get_full_path|urlencode }}';
+    }, 10000);
+    {% endif %}
+}
+
+function cancelRedirect() {
+    clearTimeout(redirectTimer);
+    clearInterval(countdownInterval);
+    document.getElementById('redirectCountdown').classList.add('hidden');
+}
+
+// Start countdown after 3 seconds
+setTimeout(startRedirectCountdown, 3000);
+
+// Add some interactive effects
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to buttons
+    const buttons = document.querySelectorAll('a[class*="bg-"]');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+    
+    // Add pulse effect to error icon
+    const errorIcon = document.querySelector('.error-icon svg');
+    if (errorIcon) {
+        setInterval(() => {
+            errorIcon.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                errorIcon.style.transform = 'scale(1)';
+            }, 200);
+        }, 3000);
+    }
+});
+</script>
+{% endblock %}

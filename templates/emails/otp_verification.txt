@@ -1,0 +1,16 @@
+Hello {{ user.first_name }} {{ user.last_name }},
+
+Welcome to the University Module Registration System! 
+
+To complete your registration and activate your account, please verify your email address using the OTP code below:
+
+VERIFICATION CODE: {{ otp_code }}
+
+This code expires in 15 minutes.
+
+Please enter this code on the verification page to activate your account. If you didn't create an account with us, please ignore this email.
+
+If you're having trouble with the verification process, please contact our support team.
+
+© 2025 University Module Registration System
+This is an automated email. Please do not reply to this message.

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Registrations{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-card {
+        transition: all 0.3s ease;
+    }
+    .registration-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .status-enrolled {
+        background-color: #10b981;
+        color: white;
+    }
+    .status-pending {
+        background-color: #f59e0b;
+        color: white;
+    }
+    .status-dropped {
+        background-color: #ef4444;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">My Module Registrations</h1>
+            <p class="text-gray-600">Manage your enrolled modules and track your progress</p>
+        </div>
+
+        <!-- Filter and Search -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Search modules..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex gap-2">
+                    <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">All Status</option>
+                        <option value="enrolled">Enrolled</option>
+                        <option value="pending">Pending</option>
+                        <option value="dropped">Dropped</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registrations Grid -->
+        <div id="registrationsContainer" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for registration in page_obj %}
+            <div class="registration-card bg-white rounded-lg shadow-sm border overflow-hidden" 
+                 data-status="{{ registration.status }}" 
+                 data-search="{{ registration.module.name|lower }} {{ registration.module.code|lower }}">
+                
+                <!-- Module Header -->
+                <div class="p-6 pb-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ registration.module.name }}</h3>
+                            <p class="text-sm text-gray-500">{{ registration.module.code }}</p>
+                        </div>
+                        <span class="status-badge status-{{ registration.status }}">
+                            {{ registration.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            {{ registration.module.department.name }}
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ registration.module.credits }} Credits
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Registered: {{ registration.registration_date|date:"M d, Y" }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="px-6 pb-6 flex gap-2">
+                    <a href="{% url 'modules:module_detail' registration.module.pk %}" 
+                       class="flex-1 bg-indigo-600 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                        View Details
+                    </a>
+                    {% if registration.status == 'enrolled' %}
+                    <button onclick="dropModule({{ registration.pk }})" 
+                            class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
+                        Drop Module
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <div class="max-w-md mx-auto">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No registrations found</h3>
+                    <p class="text-gray-500 mb-4">You haven't registered for any modules yet.</p>
+                    <a href="{% url 'modules:module_list' %}" 
+                       class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        Browse Modules
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Drop Module Modal -->
+<div id="dropModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Drop Module</h3>
+        <p class="text-gray-500 mb-6">Are you sure you want to drop this module? This action cannot be undone.</p>
+        <div class="flex gap-3">
+            <button onclick="closeDropModal()" 
+                    class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                Cancel
+            </button>
+            <button id="confirmDropBtn" 
+                    class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                Drop Module
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const registrationsContainer = document.getElementById('registrationsContainer');
+    
+    function filterRegistrations() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedStatus = statusFilter.value;
+        const cards = registrationsContainer.querySelectorAll('.registration-card');
+        
+        cards.forEach(card => {
+            const searchData = card.dataset.search;
+            const status = card.dataset.status;
+            
+            const matchesSearch = !searchTerm || searchData.includes(searchTerm);
+            const matchesStatus = !selectedStatus || status === selectedStatus;
+            
+            if (matchesSearch && matchesStatus) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    searchInput.addEventListener('input', filterRegistrations);
+    statusFilter.addEventListener('change', filterRegistrations);
+});
+
+let currentRegistrationId = null;
+
+function dropModule(registrationId) {
+    currentRegistrationId = registrationId;
+    document.getElementById('dropModal').classList.remove('hidden');
+    document.getElementById('dropModal').classList.add('flex');
+}
+
+function closeDropModal() {
+    document.getElementById('dropModal').classList.add('hidden');
+    document.getElementById('dropModal').classList.remove('flex');
+    currentRegistrationId = null;
+}
+
+document.getElementById('confirmDropBtn').addEventListener('click', function() {
+    if (currentRegistrationId) {
+        fetch(`/api/registrations/${currentRegistrationId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error dropping module. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error dropping module. Please try again.');
+        });
+    }
+    closeDropModal();
+});
+
+// Close modal when clicking outside
+document.getElementById('dropModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDropModal();
+    }
+});
+</script>
+{% endblock %}

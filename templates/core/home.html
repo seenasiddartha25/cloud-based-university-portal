@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}University Module Registration System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg p-8 mb-8">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold mb-4">University Module Registration System</h1>
+            <p class="text-xl mb-6">Register for courses and manage your academic journey</p>
+            <div class="space-x-4">
+                <a href="{% url 'students:courses' %}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Browse Courses
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'students:login' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Student Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="text-blue-600 text-3xl mb-4">📚</div>
+            <h3 class="text-xl font-semibold mb-2">Course Registration</h3>
+            <p class="text-gray-600">Register for undergraduate and graduate courses across various departments.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="text-green-600 text-3xl mb-4">📋</div>
+            <h3 class="text-xl font-semibold mb-2">Module Management</h3>
+            <p class="text-gray-600">View and manage modules within each course you're registered for.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="text-purple-600 text-3xl mb-4">👥</div>
+            <h3 class="text-xl font-semibold mb-2">Student Dashboard</h3>
+            <p class="text-gray-600">Track your progress and manage your academic profile.</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">System Overview</h2>
+        <div class="grid md:grid-cols-4 gap-4 text-center">
+            <div>
+                <div class="text-3xl font-bold text-blue-600">{{ total_courses }}</div>
+                <div class="text-gray-600">Available Courses</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-green-600">{{ total_modules }}</div>
+                <div class="text-gray-600">Total Modules</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-purple-600">{{ total_students }}</div>
+                <div class="text-gray-600">Registered Students</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-orange-600">{{ total_registrations }}</div>
+                <div class="text-gray-600">Active Registrations</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

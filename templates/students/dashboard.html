@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg p-8 mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold">Welcome back, {{ student.user.first_name }}!</h1>
+            <p class="text-red-100 mt-2">Student ID: {{ student.student_id }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex items-center">
+            <div class="text-red-600 text-2xl mr-3">📚</div>
+            <div>
+                <div class="text-2xl font-bold text-gray-900">{{ stats.total_registrations }}</div>
+                <div class="text-sm text-gray-600">Total Modules</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex items-center">
+            <div class="text-red-600 text-2xl mr-3">⭐</div>
+            <div>
+                <div class="text-2xl font-bold text-gray-900">{{ stats.total_credits }}</div>
+                <div class="text-sm text-gray-600">Total Credits</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="grid lg:grid-cols-3 gap-8">
+    <!-- Profile Card -->
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold mb-4">Profile Information</h3>
+            
+            <div class="text-center mb-4">
+                {% if student.profile_picture %}
+                    <img src="{{ student.profile_picture.url }}" alt="Profile Picture" 
+                         class="w-24 h-24 rounded-full mx-auto object-cover">
+                {% else %}
+                    <div class="w-24 h-24 rounded-full mx-auto bg-gray-300 flex items-center justify-center">
+                        <span class="text-gray-600 text-2xl">{{ student.user.first_name.0 }}{{ student.user.last_name.0 }}</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-sm text-gray-600">Full Name</label>
+                    <p class="font-medium">{{ student.user.get_full_name }}</p>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Email</label>
+                    <p class="font-medium">{{ student.user.email }}</p>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Phone</label>
+                    <p class="font-medium">{{ student.phone_number|default:"Not provided" }}</p>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Address</label>
+                    <p class="font-medium">{{ student.address|default:"Not provided" }}</p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <a href="{% url 'students:profile_edit' %}" 
+                   class="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition text-center block">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Registrations -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">My Module Registrations</h3>
+                <a href="{% url 'students:registrations' %}" class="text-red-600 hover:text-red-800 text-sm">View All</a>
+            </div>
+
+            {% if registrations %}
+                <div class="space-y-4">
+                    {% for registration in registrations|slice:":5" %}
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-900">{{ registration.module.code }} - {{ registration.module.name }}</h4>
+                                    <p class="text-sm text-gray-600 mt-1">{{ registration.module.credits }} Credits</p>
+                                    <p class="text-xs text-gray-500 mt-1">Registered: {{ registration.registration_date|date:"M d, Y" }}</p>
+                                </div>
+                                <div class="ml-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        {% if registration.status == 'enrolled' %}bg-green-100 text-green-800
+                                        {% elif registration.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                        {% elif registration.status == 'completed' %}bg-red-100 text-red-800
+                                        {% else %}bg-gray-100 text-gray-800
+                                        {% endif %}">
+                                        {{ registration.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <p class="text-gray-500 mb-4">You haven't registered for any modules yet.</p>
+                    <a href="{% url 'modules:module_list' %}" 
+                       class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                        Browse Modules
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+            <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="{% url 'modules:module_list' %}" 
+                   class="bg-red-50 border border-red-200 rounded-lg p-4 hover:bg-red-100 transition">
+                    <div class="text-red-600 text-2xl mb-2">🔍</div>
+                    <div class="font-medium text-red-900">Browse Modules</div>
+                    <div class="text-sm text-red-600">Find and register for new modules</div>
+                </a>
+
+                <a href="{% url 'students:registrations' %}" 
+                   class="bg-green-50 border border-green-200 rounded-lg p-4 hover:bg-green-100 transition">
+                    <div class="text-green-600 text-2xl mb-2">📋</div>
+                    <div class="font-medium text-green-900">My Registrations</div>
+                    <div class="text-sm text-green-600">View all your module registrations</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

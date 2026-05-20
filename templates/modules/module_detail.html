@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ module.name }} - Module Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .module-hero {
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    }
+    .info-card {
+        transition: all 0.3s ease;
+    }
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .registration-status {
+        animation: pulse 2s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Module Hero Section -->
+<div class="relative bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg overflow-hidden mb-8">
+    <div class="absolute inset-0">
+        <img src="{{ module.get_image_url }}" 
+             alt="{{ module.name }}" 
+             class="w-full h-full object-cover opacity-30">
+    </div>
+    <div class="relative z-10 py-16 px-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ module.name }}</h1>
+            <p class="text-xl opacity-90 mb-6">{{ module.code }}</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm">
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                    {{ module.get_category_display }}
+                </span>
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                    {{ module.credits }} Credits
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Main Content Grid -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Description -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Description</h2>
+                    <div class="prose prose-gray max-w-none">
+                        {{ module.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Prerequisites -->
+                {% if module.prerequisites.exists %}
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Prerequisites</h2>
+                    <div class="space-y-2">
+                        {% for prereq in module.prerequisites.all %}
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="flex-grow">
+                                    <h3 class="font-medium text-gray-900">{{ prereq.code }}</h3>
+                                    <p class="text-sm text-gray-600">{{ prereq.name }}</p>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                    {{ prereq.credits }} credits
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Learning Outcomes -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Learning Outcomes</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-600">Understand core concepts and principles</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-600">Apply knowledge through practical exercises</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-600">Demonstrate competency in assessments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assessment Methods -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Assessment Methods</h2>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-900 mb-2">Coursework</h3>
+                            <p class="text-3xl font-bold text-indigo-600">60%</p>
+                            <p class="text-sm text-gray-600">Assignments & Projects</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-900 mb-2">Final Exam</h3>
+                            <p class="text-3xl font-bold text-indigo-600">40%</p>
+                            <p class="text-sm text-gray-600">Written Examination</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Registration Card -->
+                <div class="info-card bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Registration</h3>
+                    
+                    {% if user.is_authenticated and student %}
+                        {% if is_registered %}
+                            <div class="text-center">
+                                <div class="registration-status bg-green-100 text-green-800 px-4 py-3 rounded-lg mb-4">
+                                    <svg class="w-6 h-6 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <p class="font-medium">You are registered</p>
+                                    <p class="text-sm">Status: {{ registration.get_status_display }}</p>
+                                </div>
+                                <button onclick="unregisterModule()" 
+                                        class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                    Unregister
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="text-center">
+                                <button onclick="registerModule()" 
+                                        class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors mb-4">
+                                    Register for Module
+                                </button>
+                                <p class="text-sm text-gray-500">Click to register for this module</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center">
+                            <p class="text-gray-600 mb-4">Please log in to register</p>
+                            <a href="{% url 'accounts:login' %}" 
+                               class="w-full inline-block bg-red-600 text-white text-center py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                Log In
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Module Information -->
+                <div class="info-card bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Module Information</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Module Code:</span>
+                            <span class="font-medium">{{ module.code }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Credits:</span>
+                            <span class="font-medium">{{ module.credits }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Category:</span>
+                            <span class="font-medium">{{ module.get_category_display }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Enrolled Students:</span>
+                            <span class="font-medium">{{ stats.enrolled_students }}</span>
+                        </div>
+                        {% if module.max_students %}
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Max Students:</span>
+                            <span class="font-medium">{{ module.max_students }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Related Actions -->
+                <div class="info-card bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Actions</h3>
+                    <div class="space-y-2">
+                        <a href="{% url 'modules:module_list' %}" 
+                           class="w-full inline-block text-center bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            Browse All Modules
+                        </a>
+                        {% if user.is_authenticated and user.student %}
+                        <a href="{% url 'students:dashboard' %}" 
+                           class="w-full inline-block text-center bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            My Dashboard
+                        </a>
+                        <a href="{% url 'registrations:my_registrations' %}" 
+                           class="w-full inline-block text-center bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            My Registrations
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure functions are available globally
+    window.registerModule = registerModule;
+    window.unregisterModule = unregisterModule;
+});
+
+function registerModule() {
+    if (!confirm('Are you sure you want to register for this module?')) {
+        return;
+    }
+    
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfToken) {
+        alert('CSRF token not found. Please refresh the page.');
+        return;
+    }
+    
+    fetch('/api/registrations/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken.value,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            module: {{ module.pk }},
+            student: {{ user.student.pk }}
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            return response.json().then(data => {
+                throw new Error(data.detail || 'Registration failed');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error registering for module: ' + error.message);
+    });
+}
+
+function unregisterModule() {
+    if (!confirm('Are you sure you want to unregister from this module?')) {
+        return;
+    }
+    
+    {% if is_registered %}
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfToken) {
+        alert('CSRF token not found. Please refresh the page.');
+        return;
+    }
+    
+    fetch(`/api/registrations/{{ registration.pk }}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': csrfToken.value,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('Error unregistering from module. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error unregistering from module. Please try again.');
+    });
+    {% endif %}
+}
+</script>
+{% endblock %}

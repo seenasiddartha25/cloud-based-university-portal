@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Modules - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="mb-4 md:mb-0">
+            <h1 class="text-3xl font-bold text-gray-900">Available Modules</h1>
+            <p class="text-gray-600 mt-1">Browse and register for available modules</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="Search modules..." 
+                       class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <select id="credits-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <option value="">All Credits</option>
+                {% for credit in credit_options %}
+                    <option value="{{ credit }}">{{ credit }} Credit{{ credit|pluralize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Modules Grid -->
+<div id="modules-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for module in page_obj %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow module-card" 
+             data-module-name="{{ module.name|lower }}" 
+             data-module-code="{{ module.code|lower }}" 
+             data-credits="{{ module.credits }}">
+            <!-- Module Image -->
+            <div class="relative h-48 bg-gray-200">
+                <img src="{{ module.get_image_url }}" 
+                     alt="{{ module.name }}" 
+                     class="w-full h-full object-cover">
+                <div class="absolute top-4 right-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if module.category == 'CORE' %}bg-red-100 text-red-800
+                        {% elif module.category == 'ELECTIVE' %}bg-green-100 text-green-800
+                        {% elif module.category == 'SPECIALIZED' %}bg-purple-100 text-purple-800
+                        {% else %}bg-gray-100 text-gray-800
+                        {% endif %}">
+                        {{ module.get_category_display }}
+                    </span>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Module Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-red-600">{{ module.code }}</h3>
+                        <p class="text-sm text-gray-600">{{ module.credits }} Credit{{ module.credits|pluralize }}</p>
+                    </div>
+                </div>
+                <!-- Module Content -->
+                <h4 class="font-medium text-gray-900 mb-2">{{ module.name }}</h4>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-3">{{ module.description|truncatewords:20 }}</p>
+                <!-- Module Footer -->
+                <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                    <div class="text-sm text-gray-500">
+                        {{ module.credits }} Credit{{ module.credits|pluralize }}
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{% url 'modules:module_detail' module.code %}" 
+                           class="text-red-600 hover:text-red-800 text-sm font-medium">
+                            View Details
+                        </a>
+                        {% if user.is_authenticated %}
+                            {% if module.is_registered %}
+                                <span class="text-green-600 text-sm font-medium">✓ Registered</span>
+                            {% else %}
+                                <form method="post" action="{% url 'students:register_module' module.code %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition">
+                                        Register
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full text-center py-12">
+            <div class="text-gray-400 text-6xl mb-4">📚</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No modules found</h3>
+            <p class="text-gray-600">Try adjusting your search or filter criteria.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+    <div class="mt-8 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if credits %}&credits={{ credits }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    Previous
+                </a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-red-50 text-sm font-medium text-red-600">
+                        {{ num }}
+                    </span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if credits %}&credits={{ credits }}{% endif %}" 
+                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {{ num }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if credits %}&credits={{ credits }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    Next
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+{% endif %}
+
+<script>
+// Search and filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const creditsFilter = document.getElementById('credits-filter');
+    const moduleCards = document.querySelectorAll('.module-card');
+
+    function filterModules() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCredits = creditsFilter.value;
+
+        moduleCards.forEach(card => {
+            const moduleName = card.dataset.moduleName;
+            const moduleCode = card.dataset.moduleCode;
+            const credits = card.dataset.credits;
+
+            const matchesSearch = searchTerm === '' || 
+                                moduleName.includes(searchTerm) || 
+                                moduleCode.includes(searchTerm);
+            const matchesCredits = selectedCredits === '' || credits === selectedCredits;
+
+            if (matchesSearch && matchesCredits) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterModules);
+    creditsFilter.addEventListener('change', filterModules);
+});
+</script>
+{% endblock %}

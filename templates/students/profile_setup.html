@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Your Profile - University Module Registration System{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Complete Your Profile</h2>
+        <p class="text-gray-600 mt-2">Please provide your student information to continue</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+            <label for="student_id" class="block text-sm font-medium text-gray-700">Student ID</label>
+            <input type="text" name="student_id" id="student_id" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                   placeholder="e.g., STU12345">
+            <p class="text-xs text-gray-500 mt-1">Enter your unique student identification number</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" name="phone_number" id="phone_number" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="+1-234-567-8900">
+            </div>
+
+            <div>
+                <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                <input type="date" name="date_of_birth" id="date_of_birth" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <textarea name="address" id="address" rows="3" required
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter your full address"></textarea>
+        </div>
+
+        <div>
+            <label for="profile_picture" class="block text-sm font-medium text-gray-700">Profile Picture (Optional)</label>
+            <input type="file" name="profile_picture" id="profile_picture" accept="image/*"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <p class="text-xs text-gray-500 mt-1">Upload a profile picture (JPG, PNG, max 5MB)</p>
+        </div>
+
+        <div>
+            <button type="submit" 
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Complete Profile
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

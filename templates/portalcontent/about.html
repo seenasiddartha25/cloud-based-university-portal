@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Section 1: Hero Section with Background Image -->
+<div class="relative bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg overflow-hidden mb-16">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+             alt="University Building" class="w-full h-full object-cover opacity-30">
+    </div>
+    <div class="relative z-10 p-16 text-center">
+        <h1 class="text-5xl font-bold mb-6">About {{ site_config.site_name|default:"Our University" }}</h1>
+        <p class="text-2xl text-red-100 max-w-3xl mx-auto">{{ site_config.site_description|default:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }}</p>
+    </div>
+</div>
+
+<!-- Section 2: About Content -->
+{% if site_config.about_content %}
+<div class="bg-white rounded-lg shadow-lg p-12 mb-16">
+    <div class="max-w-4xl mx-auto">
+        <div class="prose prose-lg mx-auto text-gray-600">
+            {{ site_config.about_content|linebreaks }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Section 2: Our Story and Mission -->
+<div class="grid lg:grid-cols-2 gap-16 mb-20">
+    <!-- Our Story -->
+    <div class="relative">
+        <div class="absolute -top-4 -left-4 w-72 h-72 bg-red-100 rounded-full opacity-10"></div>
+        <div class="relative z-10">
+            <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1170&auto=format&fit=crop" 
+                 alt="Students Studying" class="w-full h-80 object-cover rounded-lg shadow-lg mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+            <div class="prose prose-lg text-gray-600 space-y-4">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="relative">
+        <div class="absolute -top-4 -right-4 w-64 h-64 bg-red-50 rounded-full opacity-20"></div>
+        <div class="relative z-10">
+            <h2 class="text-4xl font-bold text-gray-900 mb-8">Mission & Vision</h2>
+            
+            <div class="bg-red-50 rounded-xl p-8 mb-8 border-l-4 border-red-500">
+                <h3 class="text-2xl font-semibold text-red-900 mb-4">Our Mission</h3>
+                <p class="text-red-800 text-lg leading-relaxed">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+            </div>
+
+            <div class="bg-red-100 rounded-xl p-8 border-l-4 border-red-600">
+                <h3 class="text-2xl font-semibold text-red-900 mb-4">Our Vision</h3>
+                <p class="text-red-800 text-lg leading-relaxed">
+                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Campus Features & Statistics -->
+<div class="bg-white rounded-xl shadow-xl p-12 mb-16">
+    <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">Campus Life & Facilities</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    
+    <!-- Campus Images Grid -->
+    <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <div class="group relative overflow-hidden rounded-lg shadow-lg">
+            <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                 alt="Library" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="absolute inset-0 bg-red-600 bg-opacity-0 group-hover:bg-opacity-80 transition-all duration-300 flex items-center justify-center">
+                <h3 class="text-white text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">Modern Library</h3>
+            </div>
+        </div>
+        
+        <div class="group relative overflow-hidden rounded-lg shadow-lg">
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                 alt="Laboratory" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="absolute inset-0 bg-red-600 bg-opacity-0 group-hover:bg-opacity-80 transition-all duration-300 flex items-center justify-center">
+                <h3 class="text-white text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">Research Labs</h3>
+            </div>
+        </div>
+        
+        <div class="group relative overflow-hidden rounded-lg shadow-lg">
+            <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                 alt="Campus Ground" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="absolute inset-0 bg-red-600 bg-opacity-0 group-hover:bg-opacity-80 transition-all duration-300 flex items-center justify-center">
+                <h3 class="text-white text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">Campus Grounds</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-xl p-12 text-white">
+        <h3 class="text-3xl font-bold text-center mb-12">Our Impact in Numbers</h3>
+        <div class="grid md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-5xl font-bold mb-2">15,000+</div>
+                <div class="text-red-100 text-lg">Students Enrolled</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">200+</div>
+                <div class="text-red-100 text-lg">Module Options</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">95%</div>
+                <div class="text-red-100 text-lg">Student Satisfaction</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">50+</div>
+                <div class="text-red-100 text-lg">Years of Excellence</div>
+            </div>
+        </div>
+{% endblock %}

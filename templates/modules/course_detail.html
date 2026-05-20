@@ -1,0 +1,158 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ course.name }} - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Course Header -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+    <div class="relative h-64 bg-gray-200">
+        <img src="{{ course.get_image_url }}" 
+             alt="{{ course.name }}" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="absolute bottom-0 left-0 p-6 text-white">
+            <div class="mb-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                    {% if course.level == 'UNDERGRADUATE' %}bg-blue-500
+                    {% elif course.level == 'POSTGRADUATE' %}bg-purple-500
+                    {% elif course.level == 'DIPLOMA' %}bg-green-500
+                    {% else %}bg-gray-500
+                    {% endif %}">
+                    {{ course.get_level_display }}
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">{{ course.name }}</h1>
+            <p class="text-xl text-gray-200">{{ course.code }}</p>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <div class="grid md:grid-cols-3 gap-6 mb-6">
+            <!-- Course Stats -->
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-red-600">{{ course.get_module_count }}</div>
+                <div class="text-sm text-gray-600">Module{{ course.get_module_count|pluralize }}</div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-red-600">{{ course.get_total_credits }}</div>
+                <div class="text-sm text-gray-600">Total Credits</div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-red-600">{{ course.duration_months }}</div>
+                <div class="text-sm text-gray-600">Months</div>
+            </div>
+        </div>
+
+        <!-- Course Description -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Course Description</h3>
+            <p class="text-gray-700 leading-relaxed">{{ course.description }}</p>
+        </div>
+
+        <!-- Registration Actions -->
+        {% if user.is_authenticated %}
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                {% if is_registered %}
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-green-800">✓ You are registered for this course</h4>
+                            <p class="text-sm text-gray-600">Registration date: {{ registration.registration_date|date:"M j, Y" }}</p>
+                            <p class="text-sm text-gray-600">Status: {{ registration.get_status_display }}</p>
+                        </div>
+                        <form method="post" action="{% url 'students:unregister_course' course.code %}">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+                                Unregister
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Register for this course</h4>
+                            <p class="text-sm text-gray-600">Start your learning journey with {{ course.name }}</p>
+                        </div>
+                        <form method="post" action="{% url 'students:register_course' course.code %}">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+                                Register Now
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+                <h4 class="font-medium text-blue-800 mb-2">Want to register for this course?</h4>
+                <p class="text-sm text-blue-700 mb-3">Please login to register for courses and track your progress.</p>
+                <a href="{% url 'students:login' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Login to Register
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Course Modules -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Course Modules</h2>
+    
+    {% if modules %}
+        <div class="grid gap-4">
+            {% for module in modules %}
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h4 class="font-semibold text-gray-900">{{ module.code }}</h4>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                    {% if module.category == 'CORE' %}bg-red-100 text-red-800
+                                    {% elif module.category == 'ELECTIVE' %}bg-green-100 text-green-800
+                                    {% elif module.category == 'SPECIALIZED' %}bg-purple-100 text-purple-800
+                                    {% else %}bg-gray-100 text-gray-800
+                                    {% endif %}">
+                                    {{ module.get_category_display }}
+                                </span>
+                                <span class="text-sm text-gray-500">{{ module.credits }} Credit{{ module.credits|pluralize }}</span>
+                            </div>
+                            <h5 class="font-medium text-gray-900 mb-1">{{ module.name }}</h5>
+                            <p class="text-sm text-gray-600">{{ module.description|truncatewords:30 }}</p>
+                        </div>
+                        <div class="ml-4">
+                            <a href="{% url 'modules:module_detail' module.code %}" 
+                               class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-8">
+            <div class="text-gray-400 text-4xl mb-4">📖</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No modules available</h3>
+            <p class="text-gray-600">Modules for this course will be added soon.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Registration Statistics -->
+<div class="mt-8 bg-white rounded-lg shadow-md p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Course Statistics</h3>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{{ stats.total_registrations }}</div>
+            <div class="text-sm text-gray-600">Total Registrations</div>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">{{ stats.enrolled_students }}</div>
+            <div class="text-sm text-gray-600">Currently Enrolled</div>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">{{ course.max_students }}</div>
+            <div class="text-sm text-gray-600">Maximum Capacity</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

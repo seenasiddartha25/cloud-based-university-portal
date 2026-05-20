@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - University Module Registration System{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Edit Profile</h2>
+        <p class="text-gray-600 mt-2">Update your personal information and preferences</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="text-center mb-6">
+            {% if student.profile_picture %}
+                <img src="{{ student.profile_picture.url }}" alt="Profile Photo" class="mx-auto rounded-full w-24 h-24 object-cover border-4 border-white shadow">
+            {% endif %}
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                <input type="text" name="first_name" id="first_name" value="{{ user.first_name }}" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                <input type="text" name="last_name" id="last_name" value="{{ user.last_name }}" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" value="{{ user.email }}" required readonly
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label for="student_id" class="block text-sm font-medium text-gray-700">Student ID</label>
+                <input type="text" name="student_id" id="student_id" value="{{ student.student_id }}" required readonly
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed">
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" name="phone_number" id="phone_number" value="{{ student.phone_number|default:'' }}"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                <input type="date" name="date_of_birth" id="date_of_birth" value="{{ student.date_of_birth|date:'Y-m-d' }}"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <textarea name="address" id="address" rows="3"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter your full address">{{ student.address|default:'' }}</textarea>
+        </div>
+
+        <div>
+            <label for="profile_picture" class="block text-sm font-medium text-gray-700">Profile Picture (Optional)</label>
+            <input type="file" name="profile_picture" id="profile_picture" accept="image/*"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <p class="text-xs text-gray-500 mt-1">Upload a profile picture (JPG, PNG, max 5MB)</p>
+        </div>
+
+        <div>
+            <button type="submit" 
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Update Profile
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

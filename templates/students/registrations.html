@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}My Registrations - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="mb-4 md:mb-0">
+            <h1 class="text-3xl font-bold text-gray-900">My Registrations</h1>
+            <p class="text-gray-600 mt-1">View and manage your module registrations</p>
+        </div>
+        
+        <!-- Filter by Status -->
+        <div class="flex gap-4">
+            <select id="status-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <option value="">All Status</option>
+                {% for status_choice in status_choices %}
+                    <option value="{{ status_choice.0 }}" {% if status_choice.0 == status_filter %}selected{% endif %}>
+                        {{ status_choice.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Registrations List -->
+<div class="space-y-6">
+    {% for registration in registrations %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="{{ registration.module.get_image_url }}" 
+                                 alt="{{ registration.module.name }}" 
+                                 class="w-16 h-16 rounded-lg object-cover">
+                            <div>
+                                <h3 class="text-lg font-semibold text-red-600">{{ registration.module.code }}</h3>
+                                <h4 class="font-medium text-gray-900">{{ registration.module.name }}</h4>
+                                <p class="text-sm text-gray-600">{{ registration.module.credits }} Credit{{ registration.module.credits|pluralize }}</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-sm text-gray-600 mb-4">{{ registration.module.description|truncatewords:30 }}</p>
+                        
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span>Registered: {{ registration.registration_date|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ml-6 text-right">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            {% if registration.status == 'enrolled' %}bg-green-100 text-green-800
+                            {% elif registration.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif registration.status == 'completed' %}bg-red-100 text-red-800
+                            {% elif registration.status == 'dropped' %}bg-gray-100 text-gray-800
+                            {% else %}bg-gray-100 text-gray-800
+                            {% endif %}">
+                            {{ registration.get_status_display }}
+                        </span>
+                        
+                        {% if registration.status in 'pending,enrolled' %}
+                            <div class="mt-4">
+                                <a href="{% url 'students:unregister_module' registration.module.code %}" 
+                                   class="text-red-600 hover:text-red-800 text-sm font-medium"
+                                   onclick="return confirm('Are you sure you want to unregister from this module?')">
+                                    Unregister
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <div class="text-gray-400 text-6xl mb-4">📋</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No registrations found</h3>
+            <p class="text-gray-600 mb-6">You haven't registered for any modules yet.</p>
+            <a href="{% url 'modules:module_list' %}" 
+               class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                Browse Modules
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = document.getElementById('status-filter');
+    
+    statusFilter.addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const url = new URL(window.location);
+        
+        if (selectedStatus) {
+            url.searchParams.set('status', selectedStatus);
+        } else {
+            url.searchParams.delete('status');
+        }
+        
+        window.location.href = url.toString();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}My Courses - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="mb-4 md:mb-0">
+            <h1 class="text-3xl font-bold text-gray-900">Available Courses</h1>
+            <p class="text-gray-600 mt-1">Browse and register for courses</p>
+        </div>
+        <div class="text-sm text-gray-500">
+            Student: {{ student.full_name }} ({{ student.student_id }})
+        </div>
+    </div>
+</div>
+
+<!-- Courses Grid -->
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for course in courses %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <!-- Course Image -->
+            <div class="relative h-48 bg-gray-200">
+                <img src="{{ course.get_image_url }}" 
+                     alt="{{ course.name }}" 
+                     class="w-full h-full object-cover">
+                <div class="absolute top-4 right-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if course.level == 'UNDERGRADUATE' %}bg-blue-100 text-blue-800
+                        {% elif course.level == 'POSTGRADUATE' %}bg-purple-100 text-purple-800
+                        {% elif course.level == 'DIPLOMA' %}bg-green-100 text-green-800
+                        {% else %}bg-gray-100 text-gray-800
+                        {% endif %}">
+                        {{ course.get_level_display }}
+                    </span>
+                </div>
+                {% if course.is_registered %}
+                    <div class="absolute top-4 left-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ✓ Registered
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-6">
+                <!-- Course Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-red-600">{{ course.code }}</h3>
+                        <p class="text-sm text-gray-600">{{ course.duration_months }} months</p>
+                    </div>
+                </div>
+                <!-- Course Content -->
+                <h4 class="font-medium text-gray-900 mb-2">{{ course.name }}</h4>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-3">{{ course.description|truncatewords:20 }}</p>
+                
+                <!-- Course Stats -->
+                <div class="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-600">
+                    <div class="text-center">
+                        <div class="font-medium text-gray-900">{{ course.get_module_count }}</div>
+                        <div>Module{{ course.get_module_count|pluralize }}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-medium text-gray-900">{{ course.get_total_credits }}</div>
+                        <div>Total Credits</div>
+                    </div>
+                </div>
+                
+                <!-- Course Footer -->
+                <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                    <div class="text-sm text-gray-500">
+                        {{ course.duration_months }} months
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{% url 'modules:course_detail' course.code %}" 
+                           class="text-red-600 hover:text-red-800 text-sm font-medium">
+                            View Details
+                        </a>
+                        {% if course.is_registered %}
+                            <form method="post" action="{% url 'students:unregister_course' course.code %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition">
+                                    Unregister
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'students:register_course' course.code %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition">
+                                    Register
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full text-center py-12">
+            <div class="text-gray-400 text-6xl mb-4">📚</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No courses available</h3>
+            <p class="text-gray-600">Please check back later for new courses.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

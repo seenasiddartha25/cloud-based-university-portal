@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - University Module Registration System{% endblock %}
+
+{% block content %}
+<!-- Section 1: Hero Section -->
+<div class="relative bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg overflow-hidden mb-12">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+             alt="University Campus" class="w-full h-full object-cover opacity-30">
+    </div>
+    <div class="relative z-10 p-12 text-center">
+        <h1 class="text-5xl font-bold mb-6">Welcome to {{ site_config.site_name|default:"University Module Registration" }}</h1>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">{{ site_config.site_description|default:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }}</p>
+        {% if not user.is_authenticated %}
+            <div class="space-x-4">
+                <a href="{% url 'accounts:register' %}" class="bg-white text-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Get Started</a>
+                <a href="{% url 'modules:module_list' %}" class="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-red-600 transition">Browse Modules</a>
+            </div>
+        {% else %}
+            <div class="space-x-4">
+                <a href="{% url 'students:dashboard' %}" class="bg-white text-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">My Dashboard</a>
+                <a href="{% url 'modules:module_list' %}" class="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-red-600 transition">Browse Modules</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Section 2: Features Grid -->
+<div class="mb-16">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose Our Platform</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <div class="relative w-full h-48 mb-6 rounded-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Module Management" class="w-full h-full object-cover">
+            </div>
+            <h3 class="text-2xl font-semibold mb-4 text-red-600">Module Management</h3>
+            <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+        </div>
+        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <div class="relative w-full h-48 mb-6 rounded-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Progress Tracking" class="w-full h-full object-cover">
+            </div>
+            <h3 class="text-2xl font-semibold mb-4 text-red-600">Progress Tracking</h3>
+            <p class="text-gray-600">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        </div>
+        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <div class="relative w-full h-48 mb-6 rounded-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Easy Registration" class="w-full h-full object-cover">
+            </div>
+            <h3 class="text-2xl font-semibold mb-4 text-red-600">Easy Registration</h3>
+            <p class="text-gray-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Statistics -->
+<div class="bg-red-600 text-white p-12 rounded-lg mb-16">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4">Our Platform Statistics</h2>
+        <p class="text-xl text-red-100">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <div class="grid md:grid-cols-4 gap-8 text-center">
+        <div>
+            <div class="text-4xl font-bold text-white mb-2" id="stat-students">0</div>
+            <div class="text-red-100">Active Students</div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-white mb-2" id="stat-modules">0</div>
+            <div class="text-red-100">Available Modules</div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-white mb-2" id="stat-registrations">0</div>
+            <div class="text-red-100">Total Registrations</div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-white mb-2" id="stat-satisfaction">98%</div>
+            <div class="text-red-100">Student Satisfaction</div>
+        </div>
+    </div>
+</div>
+
+<!-- News Section -->
+{% if news_updates %}
+<div class="bg-white rounded-lg shadow-lg p-12 mb-16">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Latest News & Updates</h2>
+        <p class="text-xl text-gray-600">Stay informed about what's happening at our university</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        {% for news in news_updates %}
+        <div class="bg-gray-50 rounded-lg p-6 hover:bg-gray-100 transition-colors">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">{{ news.title }}</h3>
+            <p class="text-gray-600 mb-4">{{ news.excerpt|default:news.content|truncatechars:150 }}</p>
+            <div class="text-sm text-gray-500">
+                <time datetime="{{ news.created_at|date:'Y-m-d' }}">{{ news.created_at|date:'M d, Y' }}</time>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- External NewsAPI Section -->
+{% if newsapi_articles %}
+<div class="bg-white rounded-lg shadow-lg p-12 mb-16">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Latest Education News</h2>
+        <p class="text-xl text-gray-600">Curated from around the web</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        {% for a in newsapi_articles %}
+        <a href="{{ a.url }}" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+            {% if a.urlToImage %}
+            <div class="relative w-full h-48 bg-gray-200">
+                <img src="{{ a.urlToImage }}" alt="{{ a.title }}" class="w-full h-48 object-cover">
+            </div>
+            {% endif %}
+            <div class="p-6">
+                <div class="text-sm text-gray-500 mb-2">
+                    <span>{{ a.source|default:'External' }}</span>
+                    {% if a.publishedAt %} • <time datetime="{{ a.publishedAt|date:'c' }}">{{ a.publishedAt|date:'M d, Y' }}</time>{% endif %}
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ a.title }}</h3>
+                {% if a.description %}
+                <p class="text-gray-600">{{ a.description|truncatechars:140 }}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Section 4: Call to Action -->
+<div class="relative bg-gray-900 text-white rounded-lg overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+             alt="Students Learning" class="w-full h-full object-cover opacity-40">
+    </div>
+    <div class="relative z-10 p-16 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Start Your Journey?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        {% if not user.is_authenticated %}
+            <div class="space-x-4">
+                <a href="{% url 'accounts:register' %}" class="bg-red-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-red-700 transition text-lg">Register Now</a>
+                <a href="{% url 'portalcontent:contact' %}" class="border border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition text-lg">Contact Us</a>
+            </div>
+        {% else %}
+            <div class="space-x-4">
+                <a href="{% url 'modules:module_list' %}" class="bg-red-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-red-700 transition text-lg">Explore Modules</a>
+                <a href="{% url 'students:dashboard' %}" class="border border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition text-lg">My Dashboard</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Animate counters
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 100;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 20);
+}
+
+// Load stats from API
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/stats/')
+        .then(response => response.json())
+        .then(data => {
+            animateCounter(document.getElementById('stat-students'), data.students || 1250);
+            animateCounter(document.getElementById('stat-modules'), data.modules || 85);
+            animateCounter(document.getElementById('stat-registrations'), data.registrations || 3420);
+        })
+        .catch(error => {
+            // Fallback to placeholder values
+            animateCounter(document.getElementById('stat-students'), 1250);
+            animateCounter(document.getElementById('stat-modules'), 85);
+            animateCounter(document.getElementById('stat-registrations'), 3420);
+        });
+});
+</script>
+{% endblock %}
